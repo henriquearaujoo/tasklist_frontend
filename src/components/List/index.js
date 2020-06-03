@@ -19,10 +19,7 @@ export default function List(props) {
 
   const list = items.map((item) => (
     <TableRow hover key={item.id}>
-      <TableCell style={{ width: 10 }} align="left">
-        {item.id}
-      </TableCell>
-      <TableCell>
+      <TableCell align="left">
         <Box display="flex" flexDirection="column">
           <Typography variant="button" display="block" gutterBottom>
             {item.title}
