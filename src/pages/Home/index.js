@@ -13,9 +13,11 @@ export default function Home() {
   const [createdItems, setCreatedItems] = useState([]);
   const [doneItems, setDoneItems] = useState([]);
   const [task, setTask] = useState({ title: "", description: "" });
+  const [loading, setLoading] = useState(false);
 
   async function getData() {
     try {
+      setLoading(true);
       const response = await api.get("/tasks");
       const { data } = response;
       const citems = data.filter((item) => item.status === "CREATED");
@@ -48,6 +50,8 @@ export default function Home() {
       );
     } catch (error) {
       console.log(error);
+    } finally {
+      setLoading(false);
     }
   }
   useEffect(() => {
@@ -67,6 +71,7 @@ export default function Home() {
   async function handleSubmit(event) {
     event.preventDefault();
     try {
+      setLoading(true);
       if (task && task.id === undefined) {
         await api.post("/tasks", {
           ...task,
@@ -79,6 +84,8 @@ export default function Home() {
       setTask({ title: "", description: "" });
     } catch (error) {
       console.log(error);
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -86,11 +93,14 @@ export default function Home() {
     try {
       const confirm = window.confirm("Confirma a exclusão da tarefa?");
       if (confirm) {
+        setLoading(true);
         await api.delete(`/tasks/${id}`);
         await getData();
       }
     } catch (error) {
       console.log(error);
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -98,6 +108,7 @@ export default function Home() {
     try {
       const confirm = window.confirm("Confirma a conclusão da tarefa?");
       if (confirm) {
+        setLoading(true);
         await api.put(`/tasks/${id}`, {
           status: "DONE",
         });
@@ -105,6 +116,8 @@ export default function Home() {
       }
     } catch (error) {
       console.log(error);
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -114,7 +127,7 @@ export default function Home() {
 
   return (
     <ContainerPrincipal>
-      <Container maxWidth="lg">
+      <Container maxWidth="sm">
         <Grid container spacing={3}>
           <Grid item xs={12}>
             <Paper className="paper">
@@ -123,6 +136,7 @@ export default function Home() {
                 handleSubmit={handleSubmit}
                 handleCancel={handleCancel}
                 task={task}
+                loading={loading}
               />
             </Paper>
             <Paper className="paper">
@@ -132,6 +146,7 @@ export default function Home() {
                 handleDelete={(id) => handleDelete(id)}
                 handleDone={(id) => handleDone(id)}
                 setTask={setTask}
+                loading={loading}
               />
             </Paper>
             <Paper className="paper">
@@ -140,6 +155,7 @@ export default function Home() {
                 items={doneItems}
                 handleDelete={(id) => handleDelete(id)}
                 setTask={setTask}
+                loading={loading}
               />
             </Paper>
           </Grid>

@@ -6,17 +6,19 @@ import TableContainer from "@material-ui/core/TableContainer";
 import TableRow from "@material-ui/core/TableRow";
 import IconButton from "@material-ui/core/IconButton";
 import DeleteIcon from "@material-ui/icons/Delete";
+import EditIcon from "@material-ui/icons/Edit";
 import DoneIcon from "@material-ui/icons/Done";
 import Box from "@material-ui/core/Box";
 import Typography from "@material-ui/core/Typography";
 import Tooltip from "@material-ui/core/Tooltip";
+import Loading from "../Loading";
 import PropTypes from "prop-types";
 
 export default function List(props) {
-  const { title, items, handleDelete, handleDone, setTask } = props;
+  const { title, items, handleDelete, handleDone, setTask, loading } = props;
 
   const list = items.map((item) => (
-    <TableRow hover key={item.id} onClick={() => setTask(item)}>
+    <TableRow hover key={item.id}>
       <TableCell style={{ width: 10 }} align="left">
         {item.id}
       </TableCell>
@@ -51,6 +53,15 @@ export default function List(props) {
               </IconButton>
             </Tooltip>
           )}
+          <Tooltip title="Editar">
+            <IconButton
+              aria-label="editar"
+              component="span"
+              onClick={() => setTask(item)}
+            >
+              <EditIcon />
+            </IconButton>
+          </Tooltip>
           <Tooltip title="Excluir">
             <IconButton
               aria-label="delete"
@@ -70,7 +81,7 @@ export default function List(props) {
       <Typography>{title}</Typography>
       <TableContainer>
         <Table stickyHeader aria-label="sticky table">
-          <TableBody>{list}</TableBody>
+          {loading ? <Loading tamanho={20} /> : <TableBody>{list}</TableBody>}
         </Table>
       </TableContainer>
     </>
@@ -83,4 +94,5 @@ List.propTypes = {
   handleDelete: PropTypes.array.isRequired,
   handleDone: PropTypes.array.isRequired,
   setTask: PropTypes.array.isRequired,
+  loading: PropTypes.bool.isRequired,
 };
